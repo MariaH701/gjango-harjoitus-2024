@@ -1,8 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from .models import Kysymys
+
 def indeksi(request):
-    return HttpResponse("Heippa! Olet kysely-appin index-sivustolla.")
+
+    kysymyslista = Kysymys.objects.order_by("-julkaisupvm")[:2]
+    context = {
+        "kysymykset": kysymyslista,
+    }
+    return render(request, "kysely/indeksi.html", context)    
 
 def näytä(request, question_id):
     return HttpResponse("Katsot juuri kysymystä {question_id}")
