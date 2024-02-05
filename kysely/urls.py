@@ -10,7 +10,7 @@ urlpatterns = [
     # esim. /kyselyt/5/tulokset/
     path("<int:question_id>/tulokset/", views.tulokset, name="tulokset"),
     # esim. /kyselyt/5/äänestä/
-    path("<int:question_id>/aanesta/", views.äänestä, name="äänestä"),
+    path("<int:question_id>/äänestä/", views.äänestä, name="äänestä"),
 ]
 
 
