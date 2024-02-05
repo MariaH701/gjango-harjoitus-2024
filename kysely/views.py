@@ -1,4 +1,4 @@
-from django.http import HttpResponse 
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 
 from .models import Kysymys
@@ -12,11 +12,30 @@ def indeksi(request):
 
 def näytä(request, kysymys_id):
     kysym = get_object_or_404(Kysymys, pk=kysymys_id)
-    return render(request, "kysely/näytä.html", {"kysymys": kysymys})
+    return render(request, "kysely/näytä.html", {"kysymys": kysym})
     
 
 def tulokset(request, question_id):
-    return HttpResponse(f"Katsot kysymyksen {question_id} tuloksia.")
+    kysym = get_object_or_404(Kysymys, pk=kysymys_id)
+    return render(request, "kysely/tulokset.html", {"kysymys": kysym})
     
 def äänestä(request, question_id):
-    return HttpResponse(f"Olet äänestämässä kysymykseen {question_id}")
+    kysym = get_object_or_404(Kysymys, pk=question_id)
+    try:
+        valittu = kysym.vaihtoehto_set.get(pk=request.POST["choice"])
+    except (KeyError, Vaihtoehto.DoesNotExist):
+        # Näytä kysymyslomake uudelleen
+        return render(
+            request,
+            "kysely/näytä.html",
+            {
+                "kysymys": kysym,
+                "virheviesti": "Et valinnut mitään vaihtoehtoa.",
+            },
+        )
+    else:
+        valittu.ääniä += 1
+        valittu.save()
+        osoite = reversed("kysely:tulokset", args=(kysym.id,))
+        return HttpResponseRedirect(osoite)
+    

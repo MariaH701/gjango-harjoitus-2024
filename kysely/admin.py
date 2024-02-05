@@ -5,6 +5,6 @@ from .models import Kysymys, Vaihtoehto
 
 admin.site.register(Kysymys)
 
-@admin.site.register(Vaihtoehto)
+@admin.register(Vaihtoehto)
 class VaihtoehtoAdmin(admin.ModelAdmin):
-    list_display = ["Kysymys", "teksti"]
+    list_display = ["kysymys", "teksti"]
