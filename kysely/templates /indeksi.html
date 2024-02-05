@@ -1,7 +1,7 @@
 {% if kysymykset %}
     <ul>
     {% for kysym in kysymykset %}
-        <li><a href="/kyselyt/{{ question.id }}/">{{ kysym.teksti }}</a></li>
+        <li><a href="/kyselyt/{{ kysymys.id }}/">{{ kysym.teksti }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
