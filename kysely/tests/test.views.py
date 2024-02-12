@@ -14,7 +14,7 @@ def luo_kysymys(teksti, days):
         julkaisupvm=aika,
     )
 
-class KysymysIndeksiNäkymäTestit(TestCase):
+class IndeksiNäkymäTestit(TestCase):
     def test_ei_kysymysiä(self):
         vastaus = self.client.get(reverse("kysely:indeksi"))
 
