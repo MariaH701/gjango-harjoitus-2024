@@ -14,11 +14,11 @@ def luo_kysymys(teksti, days):
         julkaisupvm=aika,
     )
 
-class KysymysIndeksiNäkymäTests(TestCase):
+class KysymysIndeksiNäkymäTestit(TestCase):
     def test_ei_kysymysiä(self):
         vastaus = self.client.get(reverse("kysely:indeksi"))
 
-        self.assertEqual(vastaus.status_code, 200)
+        self.assertEqual(vastaus.status_code, 200) #HTTP -koodi 200 = OK
         self.assertContains(vastaus, "Ei kyselyitä saatavilla.")
         self.assertQuerySetEqual(vastaus.context["kysymykset"], [])
 
@@ -27,6 +27,7 @@ class KysymysIndeksiNäkymäTests(TestCase):
 
         vastaus = self.client.get(reverse("kysely:indeksi"))
 
+        self.assertContains(vastaus, "Ei kyselyitä saatavilla.")
         self.assertQuerySetEqual(
             vastaus.context["kysymykset"],
             [kysymys],
@@ -36,6 +37,7 @@ class KysymysIndeksiNäkymäTests(TestCase):
         luo_kysymys("Tuleva kysymys.", days=30)
 
         vastaus = self.client.get(reverse("kysely:indeksi"))
+
         self.assertContains(vastaus, "Ei kyselyitä saatavilla.")
         self.assertQuerySetEqual(vastaus.context["kysymykset"], [])
 
@@ -44,6 +46,8 @@ class KysymysIndeksiNäkymäTests(TestCase):
         luo_kysymys("Tuleva kysymys.", days=30)
 
         vastaus = self.client.get(reverse("kysymys:indeksi"))
+
+        self.assertContains(vastaus, "Mennyt kysymys.")
         self.assertQuerySetEqual(
             vastaus.context["kysymykset"],
             [kysymys],
@@ -55,7 +59,27 @@ class KysymysIndeksiNäkymäTests(TestCase):
 
         vastaus = self.client.get(reverse("kysely:indeksi"))
 
+        self.assertContains(vastaus, "Mennyt kysymys 1.")
+        self.assertContains(vastaus, "Mennyt kysymys 2.")
         self.assertQuerySetEqual(
             vastaus.context["kysymykset"],
             [kysymys2, kysymys1],
         )
+
+
+class NäytäNäkymäTekstit(TestCase):
+    def test_tuleva_kysymys(self):
+        tuleva_kysymys = luo_kysymys("Tuleva kysymys.", days=5)
+        osoite = reverse("kysely:näytä", args=(tuleva_kysymys.id,))
+
+        vastaus = self.client.get(osoite)
+
+        self.assertEqual(vastaus.status_code, 404) #HHTP -koodi 404 = ei löydy
+
+    def test_mennyt_kysymys(self):
+        mennyt_kysymys = luo_kysymys("Mennyt kysymys.", days=-5)
+        osoite = reverse("kysely:näytä", args=(mennyt_kysymys.id,))
+
+        vastaus = self.client.get(osoite)
+
+        self.assertContains(vastaus, mennyt_kysymys.teksti)

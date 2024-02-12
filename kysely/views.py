@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -33,6 +35,10 @@ class ListaNäkymä(generic.ListView):
 class NäytäNäkymä(generic.DetailView):
     model = Kysymys
     template_name = "kysely/näytä.html"
+
+    def get_queryset(self):
+        nyt = timezone.now()
+        return Kysymys.objects.filter(julkaisupvm_Ite=nyt)
 
 
 class TuloksetNäkymä(generic.DetailView):

@@ -30,15 +30,15 @@ class KysymysModelinTestit(TestCase):
         self.assertIs(vastaus, False)
     
 
-def test_onko_julkaistu_lähiaikoina_tuoreella_kysymyksellä(self):
-    """
-    onko_julkaistu_lähiaikoina True jos tuore kysymys
-    """
-    alle_vuorokausi = datetime.timedelta(hours=23, minutes=59, seconds=59)
-    tuore_aika = timezone.now() - alle_vuorokausi
-    tuore_kysymys = Kysymys(julkaisupvm=tuore_aika)
+    def test_onko_julkaistu_lähiaikoina_tuoreella_kysymyksellä(self):
+        """
+        onko_julkaistu_lähiaikoina True jos tuore kysymys
+        """
+        alle_vuorokausi = datetime.timedelta(hours=23, minutes=59, seconds=59)
+        tuore_aika = timezone.now() - alle_vuorokausi
+        tuore_kysymys = Kysymys(julkaisupvm=tuore_aika)
 
-    vastaus = tuore_kysymys.onko_julkaistu_lähiaikoina()
+        vastaus = tuore_kysymys.onko_julkaistu_lähiaikoina()
 
-    self.assertIs(vastaus, True)
-    
+        self.assertIs(vastaus, True)
+        
